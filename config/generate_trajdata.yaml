@@ -1,0 +1,55 @@
+seed: 233
+# seed_prompts_file: data/MaliciousInstruct/train.parquet
+# seed_prompts_file: data/Malicious/extremelyMalicious.json
+seed_prompts_file: data/AdvBench/advBench.json
+# seed_prompts_file: data/safety_bench/combined_output.json
+
+task_name: Qwen14B-reasoning
+
+output_path: ./data/raw_data/${task_name}/rollout${num_rollouts}
+
+reward_url: gpt
+
+# LLM Config
+# attack_model_ckpt: /home/ec2-user/MultiJailbreak/checkpoints/1
+attack_model_ckpt: Qwen/Qwen3-14B
+think_mode: true
+dtype: "half"
+tensor_parallel_size: 1
+max_num_seqs: 10
+swap_space: 4
+gpu_memory_utilization: 0.95
+max_model_len: 11200
+api: vllm
+
+# SamplingParams
+temperature: 0.7
+top_p: 0.8
+top_k: 20
+max_tokens: 11200
+repetition_penalty: 1.0
+half_precision: True
+
+# Worker Config
+worker_num: 1
+worker_prompt_num: 100000
+
+use_policy: True 
+use_strategy: True
+start_idx: 0
+end_idx: 100000000
+step_token: 
+answer_token: 
+stop_token_ids: [151643]
+
+
+num_rollouts: 64
+exploration_weight: 1.5
+max_depth: 5
+generate_samples_number: [3, 4, 3, 2, 4, 3, 3, 3]
+# generate_samples_number: [1, 1, 1, 1, 1, 1, 1, 1]
+# visit_all_node: True
+p_average_strategy: "uniform"
+able_to_reselected: True
+score_type: "UCB"
+show_tree_file: ${output_path}/all-steps

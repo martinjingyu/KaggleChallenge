@@ -1,0 +1,16 @@
+# hydra-core
+accelerate
+torch
+transformers
+datasets
+vllm
+rouge_score
+bottle
+tornado
+boto3
+fastchat
+hydra-core
+huggingface_hub
+# torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 --index-url https://download.pytorch.org/whl/cu124
+tqdm
+openai

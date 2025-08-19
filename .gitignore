@@ -1,0 +1,6 @@
+reward_model_output/
+Result/
+outputs/
+trainer_output/
+checkpoints/
+data/
