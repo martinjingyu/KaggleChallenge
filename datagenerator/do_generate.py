@@ -96,29 +96,29 @@ def thread_function(config, worker_order):
         
 @hydra.main(version_base=None, config_path="./../config", config_name="generate_trajdata")
 def main(cfg):
-    try:
-        if (cfg.seed_prompts_file.endswith(".parquet")):
-            dataset = datasets.load_dataset("parquet", data_files=cfg.seed_prompts_file)
-            prompts_data = dataset["train"]
-            prompts_data_list = []
-            for i in range(len(prompts_data)):
-                prompts_data_list.append(prompts_data[i])
-            prompts_data = prompts_data_list
+    # try:
+    #     if (cfg.seed_prompts_file.endswith(".parquet")):
+    #         dataset = datasets.load_dataset("parquet", data_files=cfg.seed_prompts_file)
+    #         prompts_data = dataset["train"]
+    #         prompts_data_list = []
+    #         for i in range(len(prompts_data)):
+    #             prompts_data_list.append(prompts_data[i])
+    #         prompts_data = prompts_data_list
         
-        else:
-            with open(cfg.seed_prompts_file, "r") as f:
-                prompts_data = json.load(f)
+    #     else:
+    #         with open(cfg.seed_prompts_file, "r") as f:
+    #             prompts_data = json.load(f)
 
-    except Exception as e:
-        print(f"Error loading prompts data: {e}")
-        # with open(cfg.seed_prompts_file, "r") as f:
-        #     prompts_data = [json.loads(line) for line in f.readlines()]
+    # except Exception as e:
+    #     print(f"Error loading prompts data: {e}")
+    #     # with open(cfg.seed_prompts_file, "r") as f:
+    #     #     prompts_data = [json.loads(line) for line in f.readlines()]
 
     
     if not os.path.exists(cfg.output_path):
         os.makedirs(cfg.output_path, exist_ok=True)
 
-    logging.info(f"Load {len(prompts_data)} Prompts for generating trajectory data!")
+    # logging.info(f"Load {len(prompts_data)} Prompts for generating trajectory data!")
     threads = []
     for i in range(cfg.worker_num):
         thread = threading.Thread(target=thread_function, args=(cfg, i))
