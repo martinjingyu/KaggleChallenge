@@ -7,9 +7,7 @@ class AttackAgent():
     def __init__(self, model, tokenizer, config, **kwargs):
         self.config = config
         self.model = model
-
         self.tokenizer  = tokenizer
-
         self.jailbreak_strategy_libray = self.read_library()
         
     

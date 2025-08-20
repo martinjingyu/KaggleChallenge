@@ -146,7 +146,7 @@ class MCTS:
         self.success_num = 0
         self.fail_num = 0
     
-    def get_evaluator(self, config):
+    def get_evaluator(self, config, model):
 
         if "gpt" in config["reward_url"]:
             from model.Evaluator.gpt4o import OpenAI_Models
@@ -154,7 +154,8 @@ class MCTS:
         if "claud" in config["reward_url"]:
             from model.Evaluator.claude import ClaudeModel
             llm = ClaudeModel()
-
+        else:
+            llm = self.model.model
         return llm
     
     @classmethod
