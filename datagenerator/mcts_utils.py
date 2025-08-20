@@ -146,7 +146,7 @@ class MCTS:
         self.success_num = 0
         self.fail_num = 0
     
-    def get_evaluator(self, config, model):
+    def get_evaluator(self, config):
 
         if "gpt" in config["reward_url"]:
             from model.Evaluator.gpt4o import OpenAI_Models
