@@ -134,8 +134,8 @@ class MCTS:
         if "claud" in config["reward_url"]:
             from model.Evaluator.claude import ClaudeModel
             llm = ClaudeModel()
-        else:
-            llm = self.model.model
+        # else:
+        #     llm = self.model.model
         return llm
     
     @classmethod
