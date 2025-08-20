@@ -224,7 +224,6 @@ class MCTS:
         """Update the values up the tree."""
         
         node.reward = reward
-        node.response_analysis = analysis
         if node.reward == 1:
             node.state = "leaf_node"
         if node.is_terminal():
@@ -324,11 +323,11 @@ class MCTS:
         for node in reversed(chain):
             messages.append({
                 "role": "assistant",
-                "content": node.attacker
+                "content": node.prompt
             })
             messages.append({
                 "role": "user",
-                "content": "<think>"+node.reasoning+"</think>"+node.victim
+                "content": "<think>"+node.reasoning+"</think>"+node.response
             })
         return messages
     
@@ -342,11 +341,11 @@ class MCTS:
         for node in reversed(chain):
             messages.append({
                 "role": "user",
-                "content": node.attacker
+                "content": node.prompt
             })
             messages.append({
                 "role": "assistant",
-                "content": node.victim
+                "content": node.response
             })
         return messages
         
