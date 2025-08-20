@@ -308,8 +308,7 @@ class MCTS:
             messages = copy.deepcopy(conversation)
             messages.append({"role": "user", "content": question})
             messages_list.append(messages)
-        print(messages_list)
-        exit()
+            
         return target_model.batch_response(messages_list, len(question_list))
     
     def get_history(self, node):
@@ -317,7 +316,7 @@ class MCTS:
         chain = []
 
         while node.parent is not None:
-            chain.append(node.parent)
+            chain.append(node)
             node = node.parent
         
         for node in reversed(chain):
@@ -335,7 +334,7 @@ class MCTS:
         messages = []
         chain = []
         while node.parent is not None:
-            chain.append(node.parent)
+            chain.append(node)
             node = node.parent
         
         for node in reversed(chain):
