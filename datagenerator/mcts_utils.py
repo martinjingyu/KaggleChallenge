@@ -6,7 +6,7 @@ import numpy as np
 from dataclasses import dataclass
 from tqdm import tqdm
 import json
-from orm import llm_eval, reject_words
+from orm import llm_eval
 from transformers import StoppingCriteria
 import random
 import time
@@ -219,7 +219,7 @@ class MCTS:
     def evaluate(self, node) -> float:
         """Run a simulation from the current state."""
         
-        return llm_eval(self.evaluator, node.attacker, node.victim, self.get_history_target(node))
+        return llm_eval(self.evaluator, node.victim, node.reasoning)
 
     def backpropagate(self, node: MCTSNode, reward: float, analysis: str) -> None:
         """Update the values up the tree."""
@@ -275,15 +275,10 @@ class MCTS:
             self.backpropagate(selected_node, reward, analysis)
             # print(selected_node)
             
-            if reward == 2:
+            if reward == 5:
                 self.success_num += 1
             
                 if self.success_num >= 5:
-                    break
-                
-            if reward == -2:
-                self.fail_num += 1
-                if self.fail_num >= 30:
                     break
             
         for node in self.total_node_list:
@@ -298,16 +293,12 @@ class MCTS:
                     # print("-----analysis-----")
                     # print(analysis)
                     self.backpropagate(child_node, reward, analysis)
-                    if reward == 2:
+                    if reward == 5:
                         self.success_num += 1
                     
                         if self.success_num >= 5:
                             break
                         
-                    if reward == -2:
-                        self.fail_num += 1
-                        if self.fail_num >= 30:
-                            break
                 
                 
 

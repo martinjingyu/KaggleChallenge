@@ -1,0 +1,42 @@
+api_keys: &api_key_values
+    access_key: AKIATJHQEBAI4OCLZREL
+    secret_key: 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
+
+gpt3.5turbo:
+    api_type: openai
+    api_key: API_KEY
+
+claude3.7sonnet:
+    api_type: bedrock
+    model_id: arn:aws:bedrock:us-east-1:225989363729:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0
+    <<: *api_key_values
+
+claude3.5sonnet:
+    api_type: bedrock
+    model_id: arn:aws:bedrock:us-east-1:225989363729:inference-profile/us.anthropic.claude-3-5-sonnet-20241022-v2:0
+    <<: *api_key_values
+
+llama3.170b:
+    api_type: bedrock
+    model_id: arn:aws:bedrock:us-east-1:225989363729:inference-profile/us.meta.llama3-1-70b-instruct-v1:0
+    <<: *api_key_values
+
+mistral8x7b:
+    api_type: bedrock
+    model_id: mistral.mixtral-8x7b-instruct-v0:1
+    <<: *api_key_values
+
+llama3.2-11b:
+    api_type: bedrock
+    model_id: us.meta.llama3-2-11b-instruct-v1:0
+    <<: *api_key_values
+
+Llama4maverick17b:
+    api_type: bedrock
+    model_id: us.meta.llama4-maverick-17b-instruct-v1:0
+    <<: *api_key_values
+
+deepseekr1:
+    api_type: bedrock
+    model_id: us.deepseek.r1-v1:0
+    <<: *api_key_values

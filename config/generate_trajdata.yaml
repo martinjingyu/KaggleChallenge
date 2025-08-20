@@ -3,7 +3,7 @@ iter: 20
 seed_prompts_file: data/AdvBench/advBench.json
 task_name: KaggleChallenge
 output_path: ./data/raw_data/${task_name}/rollout${num_rollouts}
-reward_url: self
+reward_url: gpt
 
 # LLM Config
 model_ckpt: openai/gpt-oss-20b

@@ -73,11 +73,6 @@ def thread_function(config, worker_order):
                 for child in node.children:
                     subnode={}
                     subnode["id"] = child.id
-                    # subnode["value"] = child.value
-                    # subnode["visits"] = child.visits
-                    # subnode["reward"] = child.reward
-                    # subnode["attacker"] = child.attacker
-                    # subnode["victim"] = child.victim
                     children.append(subnode)
                 datapoint["children"] =children 
                 datapoint["reasoning"] = node.reasoning
