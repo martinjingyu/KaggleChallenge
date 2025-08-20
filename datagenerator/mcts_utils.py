@@ -218,10 +218,7 @@ class MCTS:
     
     def evaluate(self, node) -> float:
         """Run a simulation from the current state."""
-        for word in reject_words:
-            if word.lower() in node.victim.lower():
-                return -2, "Victim model reject to answer."
-            
+        
         return llm_eval(self.evaluator, node.attacker, node.victim, self.get_history_target(node))
 
     def backpropagate(self, node: MCTSNode, reward: float, analysis: str) -> None:

@@ -34,8 +34,8 @@ class TargetModel():
         return_dict=True,
         padding=True,
         tokenize=True
-        )
-        
+        ).to(self.model.device)
+        print(messages_list)
         complete = self.model.generate(**text_list, temperature=self.config.temperature, max_new_tokens=self.config.max_new_tokens, top_p=self.config.top_p, top_k=self.config.top_k, do_sample=self.config.do_sample)
         
         outputs = []
