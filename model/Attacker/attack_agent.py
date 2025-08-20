@@ -18,7 +18,7 @@ class AttackAgent():
 
         output = self.model.generate(**text_list, temperature=self.config.temperature, max_new_tokens=self.config.max_new_tokens, top_p=self.config.top_p, top_k=self.config.top_k, do_sample=self.config.do_sample)
         
-        outputs = self.tokenizer.decode(output)
+        outputs = self.tokenizer.batch_decode(output, skip_special_tokens=True)
 
 
         return outputs
