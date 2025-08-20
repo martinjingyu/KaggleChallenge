@@ -327,7 +327,7 @@ class MCTS:
             })
             messages.append({
                 "role": "user",
-                "content": "<think>"+node.reasoning+"</think>"+node.response
+                "content": "This is the model's thinking process:\n"+node.reasoning+"\n This is the model's final response:\n"+node.response
             })
         return messages
     
