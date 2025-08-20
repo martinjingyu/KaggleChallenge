@@ -15,25 +15,17 @@ class AttackAgent():
     
     def generate_node_attack_prompt(self, node, child_num, history, **kwargs):
         
-        
-        if node.strategy == None:
-            strategy_list = random.sample(self.jailbreak_strategy_libray, child_num)
-        
-        else:
-            strategy_list = [node.strategy] * child_num
-        if history == None:
-            history = [{"role":"user", "content": ""}]
             
-        text_list = apply_chat_template_batch(self.config, node, self.tokenizer, strategy_list, history)
+        text_list = apply_chat_template_batch(self.config, node, self.tokenizer, history,child_num)
 
-        output = self.model.generate(text_list, use_tqdm=False)
+        output = self.model.generate(text_list, use_tqdm=False, temperature=self.config.temperature, max_new_tokens=self.config.max_new_tokens, top_p=self.config.top_p, top_k=self.config.top_k, do_sample=self.config.do_sample)
         
         prompt_list = []
         for i, out in enumerate(output):
             response = out.outputs[0].text.strip("\n")
             prompt_list.append(response)
 
-        return prompt_list, strategy_list
+        return prompt_list
     
     def read_library(self):
         strategy_list = []

@@ -1,51 +1,32 @@
-# Licensed under the MIT license.
-
-import torch
-from transformers import (
-    GenerationConfig,
-    AutoModelForCausalLM,
-    AutoTokenizer,
-)
-from typing import List, Dict
-from tqdm import tqdm
-import torch.nn.functional as F
-import numpy as np
-from vllm import LLM, SamplingParams
-
-from transformers import AutoTokenizer
 import sys
 import json
-
 sys.path.append("./")
-from .firstAttackStrategy import network
-
 from .template import system_prompt
+import copy
 
-# Network framing
-# Crescendo
-# 
 
-def apply_chat_template_batch(config, node, tokenizer, think_mode, strategy_list,history):
+def apply_chat_template_batch(config, node, tokenizer,history,child_num):
     messages_list = []
     deepth = node.depth+1
     if deepth > config.max_depth:
         deepth = config.max_depth
     
-    for strategy in strategy_list:
-        messages = [
+    messages = [
             {
-                "role": "system", "content": system_prompt.format(current_turn=deepth, max_turn=config.max_depth, malicious_goal = node.info.prompt,strategy_name = strategy["strategy"], strategy_defination = strategy["description"])
+                "role": "system", "content": system_prompt
             }
         ]
 
-        messages.extend(history)
-        messages_list.append(messages)
+    messages.extend(history)
+    messages_list = [copy.deepcopy(messages) for _ in range(child_num)]
     
     text_list = tokenizer.apply_chat_template(
         messages_list,
-        tokenize=False,
         add_generation_prompt=True,
-        enable_thinking=think_mode,
+        return_tensors="pt",
+        return_dict=True,
+        padding=True,
+        tokenize=True
     )
     
     return text_list

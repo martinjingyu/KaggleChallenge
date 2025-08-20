@@ -1,27 +1,20 @@
 seed: 233
-
+iter: 20
 seed_prompts_file: data/AdvBench/advBench.json
 task_name: KaggleChallenge
 output_path: ./data/raw_data/${task_name}/rollout${num_rollouts}
-
 reward_url: gpt
 
 # LLM Config
 model_ckpt: openai/gpt-oss-20b
 dtype: "half"
-tensor_parallel_size: 1
-max_num_seqs: 10
-swap_space: 4
-gpu_memory_utilization: 0.95
-max_model_len: 11200
-api: vllm
 
 # SamplingParams
 temperature: 0.7
 top_p: 0.8
 top_k: 20
 max_tokens: 11200
-repetition_penalty: 1.0
+do_sample: True
 half_precision: True
 
 # Worker Config

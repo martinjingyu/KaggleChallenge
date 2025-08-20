@@ -66,45 +66,34 @@ class CustomStoppingCriteria(StoppingCriteria):
 
         last_token = input_ids[:, -1]
         return last_token in self.stop_token_ids
-    
+
+
 @dataclass
 class MCTSConfig:
     exploration_weight: float = 1.0
     max_simulations: int = 1000
     max_depth: int = 10
 
-class SafetyInfo:
-    def __init__(self, 
-                 prompt: str,
-                 goal: str, 
-        ):
-        self.prompt = prompt
-        self.goal = goal
-        
         
 class MCTSNode:
     def __init__(self, 
                  state: str, 
                  parent: Optional['MCTSNode'] = None, 
-                 attacker: Optional[str] = None,
-                 victim: Optional[str] = None,
+                 prompt: Optional[str] = None,
+                 response: Optional[str] = None,
                  depth: Optional[int] = None,
-                 info: Optional['SafetyInfo'] = None,
+                 index: Optional[int] = None,
         ):
         self.state = state
         self.parent = parent
-        self.attacker = attacker
-        self.victim = victim
+        self.prompt = prompt
+        self.response = response
         self.children = []
         self.visits = 0
         self.value = 0.0
         self.reward = None
-        self.response_analysis = ""
-        self.index = None
+        self.index = index
         self.depth = depth
-        self.info = info
-        self.strategy = None
-        self.reasoning = None
         
     def add_child(self, child) -> 'MCTSNode':
         """Add a child node with the given action and state."""
@@ -151,8 +140,6 @@ class MCTS:
     def __init__(self, config, attack_model,target):
         self.config = config or MCTSConfig()
         self.terminators = []
-        if self.config.step_token is not None and self.config.answer_token is not None:
-            self.terminators = self.config.step_token.split(",") + self.config.answer_token.split(",")
         self.model = attack_model
         self.target_model = target
         self.leaf_node_list = set()
@@ -160,7 +147,6 @@ class MCTS:
         self.total_node_list = []
         self.node_id = {}
         self.evaluator = self.get_evaluator(config)
-        self.think_mode = config.think_mode
         self.success_num = 0
         self.fail_num = 0
     
@@ -199,11 +185,14 @@ class MCTS:
         start_time = time.time()
         
         history = self.get_history(node)
-        action_list, strategy_list = self.model.generate_node_attack_prompt(node, self.think_mode, child_num, history)
+        action_list = self.model.generate_node_attack_prompt(node, child_num, history)
 
         attacker_prompt_list = []
         reasoning_list = []
+        print(action_list)
+        exit()
         for action in action_list:
+            
             reasoning, attacker_prompt = extract_subquestion(action, node.depth + 1)
             attacker_prompt_list.append(attacker_prompt)
             reasoning_list.append(reasoning)
@@ -359,7 +348,7 @@ class MCTS:
         return target_model.batch_response(messages_list)
     
     def get_history(self, node):
-        messages = []
+        messages = [{"role": "user", "content": "Follow the instructions. Let's start the conversation."}]
         chain = []
 
         while node.parent is not None:

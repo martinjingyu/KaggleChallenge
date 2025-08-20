@@ -26,7 +26,7 @@ from utils import upload_data, upload_single_data
 import random
 random.seed(233)
 
-def thread_function(prompts_data, config, worker_order):
+def thread_function(config, worker_order):
     logging.info("THREAD " + str(worker_order) +" BEGIN")
     tokenizer = AutoTokenizer.from_pretrained(config.model_ckpt)
     model = AutoModelForCausalLM.from_pretrained(
@@ -37,16 +37,10 @@ def thread_function(prompts_data, config, worker_order):
     attack_agent = AttackAgent(model=model, tokenizer=tokenizer, config=config)
     target = TargetModel(model=model, tokenizer=tokenizer)
     
-    for i, data_item in enumerate(prompts_data):
-        if i < config.start_idx or i >= config.end_idx:
-            continue
-        if 'prompt' in data_item.keys():
-            question = data_item["prompt"]
-        else:
-            raise Exception("original prompt lack necessary attribute: target")
+    for i in range(config.iter):
         
 
-        root_node = MCTSNode("root_node", None, question, "", 0)
+        root_node = MCTSNode("root_node", None,"", "", 0, 0)
         root_node.index = 0
         generator = MCTS(config, attack_agent, target)
         
@@ -127,8 +121,7 @@ def main(cfg):
     logging.info(f"Load {len(prompts_data)} Prompts for generating trajectory data!")
     threads = []
     for i in range(cfg.worker_num):
-        prompts_data_for_worker = prompts_data[min(i*cfg.worker_prompt_num,len(prompts_data)):min((i+1)*cfg.worker_prompt_num, len(prompts_data))]
-        thread = threading.Thread(target=thread_function, args=(prompts_data_for_worker, cfg, i))
+        thread = threading.Thread(target=thread_function, args=(cfg, i))
         threads.append(thread)
         thread.start()
 
