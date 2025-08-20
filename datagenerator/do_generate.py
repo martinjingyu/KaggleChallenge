@@ -41,7 +41,7 @@ def thread_function(config, worker_order):
     for i in range(config.iter):
         
 
-        root_node = MCTSNode("root_node", None,"", "", 0, 0)
+        root_node = MCTSNode("root_node", None,"", "", 0, 0,"")
         root_node.index = 0
         generator = MCTS(config, attack_agent, target)
         

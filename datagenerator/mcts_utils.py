@@ -57,6 +57,7 @@ class MCTSNode:
                  response: Optional[str] = None,
                  depth: Optional[int] = None,
                  index: Optional[int] = None,
+                 reasoning: Optional[str] = ""
         ):
         self.state = state
         self.parent = parent
@@ -68,6 +69,7 @@ class MCTSNode:
         self.reward = None
         self.index = index
         self.depth = depth
+        self.reasoning = reasoning
         
     def add_child(self, child) -> 'MCTSNode':
         """Add a child node with the given action and state."""
@@ -194,7 +196,7 @@ class MCTS:
             label = "internal_node"
                 
 
-        for prompt, response, reasoning, strategy in zip(attacker_prompt_list, victim_response_list, reasoning_list):
+        for prompt, response, reasoning in zip(attacker_prompt_list, victim_response_list, reasoning_list):
             
             index = len(self.total_node_list)
             
@@ -204,11 +206,9 @@ class MCTS:
                 prompt, 
                 response,
                 child_node_depth, 
-                node.info
+                index,
+                reasoning
             )
-            child_node.reasoning = reasoning
-            child_node.strategy = strategy
-            child_node.index = index
         
             node.add_child(child_node)
             self.total_node_list.append(child_node)
@@ -324,7 +324,7 @@ class MCTS:
             messages.append({"role": "user", "content": question})
             messages_list.append(messages)
             
-        return target_model.batch_response(messages_list)
+        return target_model.batch_response(messages_list, len(question_list))
     
     def get_history(self, node):
         messages = [{"role": "user", "content": "Follow the instructions. Let's start the conversation."}]

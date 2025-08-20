@@ -1,6 +1,6 @@
 
 import yaml
-import torch
+import copy
 from types import SimpleNamespace
 import torch
 
@@ -15,14 +15,18 @@ class TargetModel():
         self.system_prompt = "You are a helpful AI assistant."
         
     
-    def batch_response(self, messages_list):
+    def batch_response(self, messages_list,child_num):
         """
         Generate responses for a batch of messages.
         """
-
-        for i, messages in enumerate(messages_list):
-            messages_list[i] = [{"role":"system","content":self.system_prompt}].extend(messages)
-        
+        messages = [
+            {
+                "role": "system", "content": self.system_prompt
+            }
+        ]
+        messages.extend(messages_list)
+        messages_list = [copy.deepcopy(messages) for _ in range(child_num)]
+    
         text_list = self.tokenizer.apply_chat_template(
         messages_list,
         add_generation_prompt=True,
