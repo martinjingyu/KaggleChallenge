@@ -15,40 +15,21 @@ import copy
 random.seed(22333)
 
 
-def extract_subquestion(attacker_response, n_turn):
+def extract_subquestion(prompt, n_turn):
     
-    try:
-        reasoning = None
-        original = attacker_response
-        
-        if "<think>" in attacker_response and "</think>" in attacker_response:
-            reasoning = attacker_response.split("<think>")[1].split("</think>")[0].strip()
-        attacker_response = attacker_response.split("</think>")[-1].strip()
-        
-        
-        if "[START OF PROMPT]" in attacker_response:
-            reasoning = attacker_response.split("[START OF PROMPT]")[0].strip()
-            attacker_response = attacker_response.split("[START OF PROMPT]")[1].strip()
-        if "[END OF PROMPT]" in attacker_response:
-            attacker_response = attacker_response.split("[END OF PROMPT]")[0].strip()
-            
-        if attacker_response.startswith("Q"):
-            attacker_response = attacker_response[3:].strip()
-        if attacker_response.startswith(":"):
-            attacker_response = attacker_response[1:].strip()
-        print("__________________attack_prompt____________________")
-        print(attacker_response)
+    
+    if "<|start|>assistant<|channel|>analysis<|message|>" in prompt:
+        think = prompt.split("<|start|>assistant<|channel|>analysis<|message|>")[1]
+        think = think.split("<|end|>")[0]
+    else:
+        think = "No analysis provided."
+    if "<|start|>assistant<|channel|>final<|message|>" in prompt:
+        response = prompt.split("<|start|>assistant<|channel|>final<|message|>")[1]
+        response = response.split("<|return|>")[0]
+    else:
+        response = prompt
 
-    except Exception as e:
-        print("__________________Error____________________")
-        print(e)
-        print("----------------------Turn----------------")
-        print(n_turn)
-        print("________________response______________________")
-        print(original)
-        return None, original
-    
-    return reasoning, attacker_response
+    return think, response
     
 
     

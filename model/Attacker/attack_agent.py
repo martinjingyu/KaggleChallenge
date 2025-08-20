@@ -18,12 +18,10 @@ class AttackAgent():
 
         output = self.model.generate(**text_list, temperature=self.config.temperature, max_new_tokens=self.config.max_new_tokens, top_p=self.config.top_p, top_k=self.config.top_k, do_sample=self.config.do_sample)
         
-        prompt_list = []
-        for i, out in enumerate(output):
-            response = out.outputs[0].text.strip("\n")
-            prompt_list.append(response)
+        outputs = self.tokenizer.decode(output)
 
-        return prompt_list
+
+        return outputs
     
     def read_library(self):
         strategy_list = []
