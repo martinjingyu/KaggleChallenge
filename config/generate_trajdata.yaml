@@ -13,7 +13,7 @@ dtype: "half"
 temperature: 0.7
 top_p: 0.8
 top_k: 20
-max_tokens: 11200
+max_new_tokens: 2048
 do_sample: True
 half_precision: True
 
@@ -24,7 +24,7 @@ use_policy: True
 use_strategy: True
 start_idx: 0
 end_idx: 100000000
-stop_token_ids: [151643]
+stop_token_ids: [200002]
 
 
 num_rollouts: 64
