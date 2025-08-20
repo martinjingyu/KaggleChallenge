@@ -12,16 +12,16 @@ import random
 import time
 import copy
 
-def extract_subquestion(prompt):
+def extract_output(prompt):
     
     
-    if "<|start|>assistant<|channel|>analysis<|message|>" in prompt:
-        think = prompt.split("<|start|>assistant<|channel|>analysis<|message|>")[1]
+    if "<|channel|>analysis<|message|>" in prompt:
+        think = prompt.split("<|channel|>analysis<|message|>")[1]
         think = think.split("<|end|>")[0]
     else:
         think = "No analysis provided."
-    if "<|start|>assistant<|channel|>final<|message|>" in prompt:
-        response = prompt.split("<|start|>assistant<|channel|>final<|message|>")[1]
+    if "<|channel|>final<|message|>" in prompt:
+        response = prompt.split("<|channel|>final<|message|>")[1]
         response = response.split("<|return|>")[0]
     else:
         response = prompt
@@ -169,7 +169,7 @@ class MCTS:
         reasoning_list = []
 
         for action in action_list:
-            _, attacker_prompt = extract_subquestion(action)
+            _, attacker_prompt = extract_output(action)
             attacker_prompt_list.append(attacker_prompt)
         end_time = time.time()
         print("Time taken for attacker generation: ", end_time - start_time)
@@ -177,7 +177,7 @@ class MCTS:
         start_time = time.time()
         victim_response_list = self.get_victim_model_response(self.target_model, attacker_prompt_list, node)
         for response in victim_response_list:
-            reasoning, response = extract_subquestion(response)
+            reasoning, response = extract_output(response)
             response_list.append(response)
             reasoning_list.append(reasoning)
         
