@@ -169,7 +169,7 @@ class MCTS:
         reasoning_list = []
 
         for action in action_list:
-            reasoning, attacker_prompt = extract_subquestion(action)
+            _, attacker_prompt = extract_subquestion(action)
             attacker_prompt_list.append(attacker_prompt)
         end_time = time.time()
         print("Time taken for attacker generation: ", end_time - start_time)
@@ -218,7 +218,7 @@ class MCTS:
     def evaluate(self, node) -> float:
         """Run a simulation from the current state."""
         
-        return llm_eval(self.evaluator, node.victim, node.reasoning)
+        return llm_eval(self.evaluator, node.response, node.reasoning)
 
     def backpropagate(self, node: MCTSNode, reward: float, analysis: str) -> None:
         """Update the values up the tree."""
@@ -328,7 +328,7 @@ class MCTS:
             })
             messages.append({
                 "role": "user",
-                "content": node.victim
+                "content": "<think>"+node.reasoning+"</think>"+node.victim
             })
         return messages
     
