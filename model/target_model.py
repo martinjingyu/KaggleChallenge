@@ -1,12 +1,8 @@
 
-import  os, time, yaml
+import yaml
 import torch
 from types import SimpleNamespace
-from vllm import LLM, SamplingParams
-import uuid
-from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
-import torch.nn as nn
 
 class TargetModel():
     def __init__(self, model, tokenizer):
@@ -16,6 +12,7 @@ class TargetModel():
             
         self.model = model
         self.tokenizer = tokenizer
+        self.system_prompt = "You are a helpful AI assistant."
         
     
     def batch_response(self, messages_list):
@@ -24,44 +21,26 @@ class TargetModel():
         """
 
         for i, messages in enumerate(messages_list):
-            messages_list[i] = system_prompt + messages
+            messages_list[i] = [{"role":"system","content":self.system_prompt}].extend(messages)
         
-        prompts = [
-        self.tokenizer.apply_chat_template(
-            msgs,
-            add_generation_prompt=True,
-            tokenize=False 
-        ) for msgs in messages_list
-        ]
-
-        batch = self.tokenizer(
-            prompts,
-            return_tensors="pt",
-            padding=True,
-            truncation=False
+        text_list = self.tokenizer.apply_chat_template(
+        messages_list,
+        add_generation_prompt=True,
+        return_tensors="pt",
+        return_dict=True,
+        padding=True,
+        tokenize=True
         )
         
-        batch = {k: v.to(self.model.device) for k, v in batch.items()}
+        complete = self.model.generate(**text_list, temperature=self.config.temperature, max_new_tokens=self.config.max_new_tokens, top_p=self.config.top_p, top_k=self.config.top_k, do_sample=self.config.do_sample)
         
-        gen_kwargs = dict(
-            max_new_tokens=256,
-            do_sample=True,
-            temperature=0.7,
-            top_p=0.9,
-            pad_token_id=self.tokenizer.pad_token_id
-        )
-
-        with torch.no_grad():
-            outputs = self.model.generate(**batch, **gen_kwargs)
-        results = []
-        for i, output in enumerate(outputs):
-            input_len = batch["input_ids"][i].shape[0]
+        outputs = []
+        for i, output in enumerate(complete):
+            input_len = text_list["input_ids"][i].shape[0]
             generated_tokens = output[input_len:]
-            text = self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
-            if text.startswith("assistant"):
-                text = text.split("assistant", 1)[1].strip()
-            results.append(text)
-        return results
+            outputs.append(generated_tokens)
+        outputs = self.tokenizer.batch_decode(outputs)
+        return outputs
 """
 CUDA_VISIBLE_DEVICES=0 python model/target_model.py
 """

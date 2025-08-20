@@ -12,10 +12,7 @@ import random
 import time
 import copy
 
-random.seed(22333)
-
-
-def extract_subquestion(prompt, n_turn):
+def extract_subquestion(prompt):
     
     
     if "<|start|>assistant<|channel|>analysis<|message|>" in prompt:
@@ -166,22 +163,26 @@ class MCTS:
         action_list = self.model.generate_node_attack_prompt(node, child_num, history)
 
         attacker_prompt_list = []
+        response_list = []
         reasoning_list = []
-        print(action_list)
-        exit()
+
         for action in action_list:
-            
-            reasoning, attacker_prompt = extract_subquestion(action, node.depth + 1)
+            reasoning, attacker_prompt = extract_subquestion(action)
             attacker_prompt_list.append(attacker_prompt)
-            reasoning_list.append(reasoning)
-            end_time = time.time()
-            print("Time taken for attacker generation: ", end_time - start_time)
+        end_time = time.time()
+        print("Time taken for attacker generation: ", end_time - start_time)
         
         start_time = time.time()
         victim_response_list = self.get_victim_model_response(self.target_model, attacker_prompt_list, node)
+        for response in victim_response_list:
+            reasoning, response = extract_subquestion(response)
+            response_list.append(response)
+            reasoning_list.append(reasoning)
+        
         end_time = time.time()
         print("___________________victim_response____________________")
-        print(victim_response_list)
+        print(response_list)
+        exit()
         print("Time taken for victim generation: ", end_time - start_time)
         
         child_node_depth = node.depth + 1
@@ -193,7 +194,7 @@ class MCTS:
             label = "internal_node"
                 
 
-        for prompt, response, reasoning, strategy in zip(attacker_prompt_list, victim_response_list, reasoning_list,strategy_list):
+        for prompt, response, reasoning, strategy in zip(attacker_prompt_list, victim_response_list, reasoning_list):
             
             index = len(self.total_node_list)
             
@@ -361,11 +362,6 @@ class MCTS:
                 "content": node.victim
             })
         return messages
-        
-    def get_node_id(self):
-        self.node_id = {item:i for i, item in enumerate(self.total_node_list)}
-        for node in self.total_node_list:
-            node.id = self.node_id[node]
         
     def save_tree_to_file(self, node, filename="tree_output.txt"):
         with open(filename, 'w', encoding='utf-8') as f:

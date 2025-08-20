@@ -1,19 +1,6 @@
-# LLM Config
-seed: 233
-model_name : meta-llama/Meta-Llama-3-8B-Instruct
-dtype: "half"
-gpu: "cuda:1"
-max_num_seqs: 10
-swap_space: 4
-gpu_memory_utilization: 0.95
-max_model_len: 8192
-api: vllm
-
-
 # SamplingParams
-temperature: 1.4
+temperature: 1.2
 top_p: 0.9
 top_k: 50
-max_tokens: 8192 
-repetition_penalty: 1.0
-half_precision: True
+max_new_tokens: 2048 
+do_sample: True

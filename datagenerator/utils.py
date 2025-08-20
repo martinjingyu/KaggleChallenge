@@ -9,18 +9,17 @@ def upload_data():
     api.upload_folder(
         folder_path="data",
         path_in_repo=".",
-        repo_id="MartinJYHuang/multiturn-reasoning-attack",
+        repo_id="MartinJYHuang/DeceptionSearch",
         repo_type="dataset",
         token="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"
     )
     
 def upload_single_data(folder_path, file_name):
     api = HfApi(token="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")
-    
     api.upload_file(
         path_or_fileobj=os.path.join(folder_path, file_name),
         path_in_repo=os.path.join(os.path.relpath(folder_path, "data"),file_name),
-        repo_id="MartinJYHuang/multiturn-reasoning-attack",
+        repo_id="MartinJYHuang/DeceptionSearch",
         repo_type="dataset",
         token="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"
     )

@@ -22,9 +22,10 @@ from model.Attacker import AttackAgent
 from model.target_model import TargetModel
 
 import sys
-from utils import upload_data, upload_single_data
+from utils import upload_single_data
 import random
-random.seed(233)
+import torch
+
 
 def thread_function(config, worker_order):
     logging.info("THREAD " + str(worker_order) +" BEGIN")
@@ -46,7 +47,6 @@ def thread_function(config, worker_order):
         
         generator.search(root_node,i)
         
-        generator.get_node_id()
         tree_files = f"{config.show_tree_file}"
         if not os.path.exists(tree_files):
             os.mkdir(tree_files)
@@ -113,7 +113,8 @@ def main(cfg):
     #     print(f"Error loading prompts data: {e}")
     #     # with open(cfg.seed_prompts_file, "r") as f:
     #     #     prompts_data = [json.loads(line) for line in f.readlines()]
-
+    random.seed(cfg.seed)
+    torch.manual_seed(cfg.seed)
     
     if not os.path.exists(cfg.output_path):
         os.makedirs(cfg.output_path, exist_ok=True)
@@ -128,10 +129,5 @@ def main(cfg):
     for thread in threads:
         thread.join()
         
-
-
-    
-    
-    
 if __name__ == "__main__":
     main()
