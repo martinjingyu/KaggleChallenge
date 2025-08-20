@@ -16,11 +16,16 @@ class AttackAgent():
             
         text_list = apply_chat_template_batch(self.config, node, self.tokenizer, history,child_num).to(self.model.device)
 
-        output = self.model.generate(**text_list, temperature=self.config.temperature, max_new_tokens=self.config.max_new_tokens, top_p=self.config.top_p, top_k=self.config.top_k, do_sample=self.config.do_sample)
+        complete = self.model.generate(**text_list, temperature=self.config.temperature, max_new_tokens=self.config.max_new_tokens, top_p=self.config.top_p, top_k=self.config.top_k, do_sample=self.config.do_sample)
         
-        outputs = self.tokenizer.batch_decode(output, skip_special_tokens=True)
+        outputs = []
+        for i, output in enumerate(complete):
+            input_len = text_list["input_ids"][i].shape[0]
+            generated_tokens = output[input_len:]
+            outputs.append(generated_tokens)
+        outputs = self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
 
-
+        
         return outputs
     
     def read_library(self):
