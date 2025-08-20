@@ -25,7 +25,8 @@ def extract_output(prompt):
         response = response.split("<|return|>")[0]
     else:
         response = prompt
-
+    print(think)
+    print(response)
     return think, response
     
 
@@ -78,12 +79,9 @@ class MCTSNode:
 
     def update(self, reward: float) -> None:
         """Update node statistics with new reward."""
-        # print(self.visits, self.value, self.reward, reward)
-    
+
         self.visits += 1 
         self.value += reward
-        
-        # print(self.visits, self.value, self.reward, reward)
         
     def get_ucb_score(self, exploration_weight: float) -> float:
         """Calculate UCB1 score for this node."""
@@ -305,11 +303,13 @@ class MCTS:
         conversation = self.get_history_target(node)
 
         messages_list = []
+        
         for question in question_list:
             messages = copy.deepcopy(conversation)
             messages.append({"role": "user", "content": question})
             messages_list.append(messages)
-            
+        print(messages_list)
+        exit()
         return target_model.batch_response(messages_list, len(question_list))
     
     def get_history(self, node):

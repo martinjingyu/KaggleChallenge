@@ -33,7 +33,8 @@ def thread_function(config, worker_order):
     model = AutoModelForCausalLM.from_pretrained(
         config.model_ckpt,
         torch_dtype="auto",
-        device_map="auto"
+        device_map="auto",
+        padding_side='left'
     )
     attack_agent = AttackAgent(model=model, tokenizer=tokenizer, config=config)
     target = TargetModel(model=model, tokenizer=tokenizer)
