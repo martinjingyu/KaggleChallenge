@@ -184,7 +184,6 @@ class MCTS:
         end_time = time.time()
         print("___________________victim_response____________________")
         print(response_list)
-        exit()
         print("Time taken for victim generation: ", end_time - start_time)
         
         child_node_depth = node.depth + 1

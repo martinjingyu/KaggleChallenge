@@ -27,7 +27,7 @@ end_idx: 100000000
 stop_token_ids: [200002]
 
 
-num_rollouts: 64
+num_rollouts: 2
 exploration_weight: 1.5
 max_depth: 5
 generate_samples_number: [3, 4, 3, 2, 4, 3, 3, 3]
