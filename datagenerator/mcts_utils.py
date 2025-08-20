@@ -162,18 +162,18 @@ class MCTS:
         history = self.get_history(node)
         action_list = self.model.generate_node_attack_prompt(node, child_num, history)
 
-        attacker_prompt_list = []
+        prompt_list = []
         response_list = []
         reasoning_list = []
 
         for action in action_list:
             _, attacker_prompt = extract_output(action)
-            attacker_prompt_list.append(attacker_prompt)
+            prompt_list.append(attacker_prompt)
         end_time = time.time()
         print("Time taken for attacker generation: ", end_time - start_time)
         
         start_time = time.time()
-        victim_response_list = self.get_victim_model_response(self.target_model, attacker_prompt_list, node)
+        victim_response_list = self.get_victim_model_response(self.target_model, prompt_list, node)
         for response in victim_response_list:
             reasoning, response = extract_output(response)
             response_list.append(response)
@@ -193,11 +193,10 @@ class MCTS:
             label = "internal_node"
                 
 
-        for prompt, response, reasoning in zip(attacker_prompt_list, victim_response_list, reasoning_list):
+        for prompt, response, reasoning in zip(prompt_list, response_list, reasoning_list):
             
             index = len(self.total_node_list)
             
-                
             child_node = MCTSNode(
                 label, node, 
                 prompt, 
@@ -215,7 +214,6 @@ class MCTS:
     
     def evaluate(self, node) -> float:
         """Run a simulation from the current state."""
-        
         return llm_eval(self.evaluator, node.response, node.reasoning)
 
     def backpropagate(self, node: MCTSNode, reward: float, analysis: str) -> None:
@@ -382,22 +380,3 @@ class MCTS:
             self._write_node(f, child, child.depth, indent, i == len(node.children)-1)
     
     
-    def apply_action(self, state: str, action: str) -> str:
-        """Apply an action to a state to get the next state."""
-        # Implementation depends on problem domain
-        pass
-    
-    def evaluate_state(self, state: str) -> float:
-        """Evaluate the value of a terminal state."""
-        # Implementation depends on problem domain
-        pass
-    
-    def is_terminal_state(self, state: str) -> bool:
-        """Check if a state is terminal."""
-        # Implementation depends on problem domain
-        pass
-    
-    def get_possible_actions(self, state: str) -> List[str]:
-        """Get possible actions for a state."""
-        # Implementation depends on problem domain
-        pass
