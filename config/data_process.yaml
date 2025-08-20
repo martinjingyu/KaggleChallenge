@@ -1,4 +1,0 @@
-raw_data_path: data/raw_data/Qwen8B-wildjailbreak-llama-8B/rollout64
-output_path: data/processed/
-task_name: Qwen8B-wildjailbreak-llama-8B
-model_name: Qwen/Qwen3-14B

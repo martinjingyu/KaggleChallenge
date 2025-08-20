@@ -9,62 +9,23 @@ import torch
 import torch.nn as nn
 
 class TargetModel():
-    def __init__(self):
+    def __init__(self, model, tokenizer):
         with open('config/target_config.yaml', 'r', encoding='utf-8') as f:
             config_dict = yaml.safe_load(f)
             self.config = SimpleNamespace(**config_dict)
             
-
-        os.environ['TOKENIZERS_PARALLELISM'] = 'true'
-
-
-        self.model = AutoModelForCausalLM.from_pretrained(
-            self.config.model_name,
-            trust_remote_code=True,
-            torch_dtype="bfloat16"
-        )
+        self.model = model
+        self.tokenizer = tokenizer
         
-        self.model.to(self.config.gpu)
-        self.model.eval()
-        
-        self.tokenizer = AutoTokenizer.from_pretrained(self.config.model_name)
-        print(self.tokenizer.eos_token_id)
-        self.sampling_params = SamplingParams(
-            temperature=self.config.temperature,
-            top_p=self.config.top_p,
-            top_k=self.config.top_k,
-            max_tokens=self.config.max_tokens,
-            stop_token_ids=[self.tokenizer.eos_token_id]
-        )
-        
-    def response(self, messages):
-        """
-        Generate a response from the victim model based on the provided messages.
-        """
-        text = self.tokenizer.apply_chat_template(
-        messages,
-        add_generation_prompt=True,
-        return_tensors="pt",
-        tokenize = False
-        )
-
-        
-        output = self.model.generate(text, sampling_params=self.sampling_params, use_tqdm=False)
-        result_text = output[0].outputs[0].text.strip("\n")
-        return result_text
     
     def batch_response(self, messages_list):
         """
         Generate responses for a batch of messages.
         """
-        system_prompt = [{"role": "system", "content": "You are a helpful assistant."}]
+
         for i, messages in enumerate(messages_list):
             messages_list[i] = system_prompt + messages
         
-        
-        if self.tokenizer.pad_token is None:
-            self.tokenizer.pad_token = self.tokenizer.eos_token
-            
         prompts = [
         self.tokenizer.apply_chat_template(
             msgs,

@@ -4,46 +4,29 @@ import json
 import random
 from .utils import apply_chat_template_batch
 class AttackAgent():
-    def __init__(self, config, **kwargs):
+    def __init__(self, model, tokenizer, config, **kwargs):
         self.config = config
-        self.model = LLM(model=config.attack_model_ckpt,
-                    dtype=config.dtype, 
-                    tensor_parallel_size=config.tensor_parallel_size, 
-                    seed=config.seed, 
-                    trust_remote_code=True, 
-                    max_num_seqs=config.max_num_seqs,
-                    swap_space=config.swap_space, 
-                    gpu_memory_utilization=config.gpu_memory_utilization,
-                    max_model_len=config.max_model_len) 
-        
-        self.tokenizer  = AutoTokenizer.from_pretrained(config.attack_model_ckpt, trust_remote_code=True)
+        self.model = model
 
-        self.sampling_params = SamplingParams(
-        temperature=0.6,
-        top_p=0.95,
-        top_k=20,
-        min_p=0,
-        max_tokens=2048,
-        stop_token_ids=[151643,151645]
-        )
-        
+        self.tokenizer  = tokenizer
+
         self.jailbreak_strategy_libray = self.read_library()
         
     
-    def generate_node_attack_prompt(self, node, think_mode, child_num, history, **kwargs):
+    def generate_node_attack_prompt(self, node, child_num, history, **kwargs):
         
         
         if node.strategy == None:
-
             strategy_list = random.sample(self.jailbreak_strategy_libray, child_num)
+        
         else:
             strategy_list = [node.strategy] * child_num
         if history == None:
             history = [{"role":"user", "content": ""}]
             
-        text_list = apply_chat_template_batch(self.config, node, self.tokenizer, think_mode, strategy_list, history)
+        text_list = apply_chat_template_batch(self.config, node, self.tokenizer, strategy_list, history)
 
-        output = self.model.generate(text_list, sampling_params=self.sampling_params, use_tqdm=False)
+        output = self.model.generate(text_list, use_tqdm=False)
         
         prompt_list = []
         for i, out in enumerate(output):
@@ -52,30 +35,14 @@ class AttackAgent():
 
         return prompt_list, strategy_list
     
-    
-    def get_role(self):
-        with open("model/Attacker/rolecard.json","r") as file:
-            role = json.load(file)
-        return role[0]
-    
     def read_library(self):
         strategy_list = []
         import os
         
         path = os.path.abspath(__file__)
         path = os.path.dirname(path)
-        # library_path = os.path.join(path, "lifelong_strategy_library.json")
         strategy_list_path = os.path.join(path, "multiturn_strategy.json")
-        # with open(library_path, "r") as f:
-        #     data = json.load(f)
-        #     data = list(data.values())
-        #     for item in data:
-        #         formatted_dict = {}
-        #         formatted_dict["strategy"] = item["Strategy"]
-        #         formatted_dict["defination"] = item["Definition"]
-        #         formatted_dict["example"] = item["Example"][0]
-        #         strategy_list.append(formatted_dict)
-                
+
         with open(strategy_list_path, "r") as f:
             data = json.load(f)
             for item in data:

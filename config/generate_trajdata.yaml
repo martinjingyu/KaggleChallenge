@@ -1,19 +1,13 @@
 seed: 233
-# seed_prompts_file: data/MaliciousInstruct/train.parquet
-# seed_prompts_file: data/Malicious/extremelyMalicious.json
+
 seed_prompts_file: data/AdvBench/advBench.json
-# seed_prompts_file: data/safety_bench/combined_output.json
-
-task_name: Qwen14B-reasoning
-
+task_name: KaggleChallenge
 output_path: ./data/raw_data/${task_name}/rollout${num_rollouts}
 
 reward_url: gpt
 
 # LLM Config
-# attack_model_ckpt: /home/ec2-user/MultiJailbreak/checkpoints/1
-attack_model_ckpt: Qwen/Qwen3-14B
-think_mode: true
+model_ckpt: openai/gpt-oss-20b
 dtype: "half"
 tensor_parallel_size: 1
 max_num_seqs: 10
@@ -33,13 +27,10 @@ half_precision: True
 # Worker Config
 worker_num: 1
 worker_prompt_num: 100000
-
 use_policy: True 
 use_strategy: True
 start_idx: 0
 end_idx: 100000000
-step_token: 
-answer_token: 
 stop_token_ids: [151643]
 
 
