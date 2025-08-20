@@ -1,17 +1,13 @@
 """
 Monte Carlo Tree Search (MCTS) implementation for mathematical reasoning
 """
-import sys
-import re
 from typing import List, Dict, Any, Optional, Tuple
 import numpy as np
 from dataclasses import dataclass
 from tqdm import tqdm
 import json
-from pathlib import Path
-from utils import apply_chat_template, handle_json
 from orm import llm_eval, reject_words
-from transformers import StoppingCriteria, StoppingCriteriaList
+from transformers import StoppingCriteria
 import random
 import time
 import copy
