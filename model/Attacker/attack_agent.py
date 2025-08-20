@@ -16,7 +16,7 @@ class AttackAgent():
             
         text_list = apply_chat_template_batch(self.config, node, self.tokenizer, history,child_num)
 
-        output = self.model.generate(text_list, temperature=self.config.temperature, max_new_tokens=self.config.max_new_tokens, top_p=self.config.top_p, top_k=self.config.top_k, do_sample=self.config.do_sample)
+        output = self.model.generate(**text_list, temperature=self.config.temperature, max_new_tokens=self.config.max_new_tokens, top_p=self.config.top_p, top_k=self.config.top_k, do_sample=self.config.do_sample)
         
         prompt_list = []
         for i, out in enumerate(output):
