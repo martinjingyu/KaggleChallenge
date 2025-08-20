@@ -23,7 +23,7 @@ class AttackAgent():
             input_len = text_list["input_ids"][i].shape[0]
             generated_tokens = output[input_len:]
             outputs.append(generated_tokens)
-        outputs = self.tokenizer.batch_decode(outputs, skip_special_tokens=True)
+        outputs = self.tokenizer.batch_decode(outputs)
 
         
         return outputs
