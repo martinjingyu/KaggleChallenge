@@ -19,14 +19,7 @@ class TargetModel():
         """
         Generate responses for a batch of messages.
         """
-        messages = [
-            {
-                "role": "system", "content": self.system_prompt
-            }
-        ]
-        messages.extend(messages_list)
-        messages_list = [copy.deepcopy(messages) for _ in range(child_num)]
-    
+        
         text_list = self.tokenizer.apply_chat_template(
         messages_list,
         add_generation_prompt=True,
