@@ -13,7 +13,7 @@ class AttackAgent():
     def load_model(self, config):
         if "Qwen" in config.model:
             model = AutoModelForCausalLM.from_pretrained(config.model, 
-                                                        torch_dtype=config.dtype, 
+                                                        torch_d_type=config.d_type, 
                                                         trust_remote_code=True,
                                                         device_map="auto")
             tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
