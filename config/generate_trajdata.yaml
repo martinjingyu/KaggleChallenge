@@ -1,6 +1,6 @@
 seed: 233
 iter: 20
-seed_prompts_file: data/deception_1.json
+seed_prompts_file: model/Attacker/deception_1.json
 task_name: KaggleChallenge
 output_path: ./data/raw_data/${task_name}/rollout${num_rollouts}
 reward_url: gpt
