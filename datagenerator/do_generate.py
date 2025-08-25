@@ -12,7 +12,7 @@ from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer, 
 )
-from attrdict import AttrDict
+from attrdict3 import AttrDict
 
 
 
