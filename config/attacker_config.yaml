@@ -4,5 +4,7 @@ top_p: 0.9
 top_k: 50
 max_new_tokens: 2048 
 do_sample: True
+d_type: "half"
+
 
 model: Qwen/Qwen3-14B
