@@ -12,19 +12,19 @@ class TargetModel():
         
         if "Qwen" in config.model:
             model = AutoModelForCausalLM.from_pretrained(config.model, 
-                                                        torch_d_type=config.d_type, 
+                                                        torch_dtype=config.dtype, 
                                                         trust_remote_code=True,
                                                         device_map="auto")
             tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
         elif "gpt" in config.model.lower():
             model = AutoModelForCausalLM.from_pretrained(config.model, 
-                                                        torch_d_type=config.d_type, 
+                                                        torch_dtype=config.dtype, 
                                                         trust_remote_code=True,
                                                         device_map="auto")
             tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
         elif "llama" in config.model.lower():
             model = AutoModelForCausalLM.from_pretrained(config.model, 
-                                                        torch_d_type=config.d_type, 
+                                                        torch_dtype=config.dtype, 
                                                         trust_remote_code=True,
                                                         device_map="auto")
             tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
