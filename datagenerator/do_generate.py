@@ -12,6 +12,9 @@ from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer, 
 )
+from attrdict import AttrDict
+
+
 
 from mcts_utils import MCTSNode, MCTS
 from model.Attacker import AttackAgent
@@ -25,10 +28,11 @@ import torch
 @hydra.main(version_base=None, config_path="./../config", config_name="generate_trajdata")
 def main(cfg):
     with open("config/target_config.yaml", "r") as f:
-        target_cfg = yaml.safe_load(f)
+        target_cfg = AttrDict(yaml.safe_load(f))
 
     with open("config/attacker_config.yaml", "r") as f:
-        attacker_config = yaml.safe_load(f)
+        attacker_config = AttrDict(yaml.safe_load(f))
+
     
     attack_agent = AttackAgent(attacker_config)
     target = TargetModel(target_cfg)
