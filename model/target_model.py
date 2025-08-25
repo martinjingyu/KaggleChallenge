@@ -4,7 +4,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 class TargetModel():
     def __init__(self, config):
         
-        self.cofig = config
+        self.config = config
         self.model, self.tokenizer = self.load_model(config)
         self.system_prompt = "You are a helpful AI assistant."
         
