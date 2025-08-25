@@ -88,7 +88,7 @@ class AttackAgent():
 if __name__ == "__main__":
     
     attacker = AttackAgent(model="Qwen/Qwen3-32B",
-                           dtype="half", 
+                           d_type="half", 
                            tensor_parallel_size=1, 
                            seed=0, 
                            trust_remote_code=True, 
