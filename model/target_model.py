@@ -19,8 +19,7 @@ class TargetModel():
                                                         device_map="auto")
             tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
         elif "gpt" in config.model.lower():
-            model = AutoModelForCausalLM.from_pretrained(config.model, 
-                                                        torch_dtype=dtype, 
+            model = AutoModelForCausalLM.from_pretrained(config.model,
                                                         trust_remote_code=True,
                                                         device_map="auto")
             tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
