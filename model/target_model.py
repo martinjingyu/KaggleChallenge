@@ -11,21 +11,22 @@ class TargetModel():
     
     def load_model(self, config):
         
+        dtype = torch.bfloat16 if config.dtype == "bfloat16" else "half"
         if "Qwen" in config.model:
             model = AutoModelForCausalLM.from_pretrained(config.model, 
-                                                        torch_dtype=config.dtype, 
+                                                        torch_dtype=dtype, 
                                                         trust_remote_code=True,
                                                         device_map="auto")
             tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
         elif "gpt" in config.model.lower():
             model = AutoModelForCausalLM.from_pretrained(config.model, 
-                                                        torch_dtype=config.dtype, 
+                                                        torch_dtype=dtype, 
                                                         trust_remote_code=True,
                                                         device_map="auto")
             tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
         elif "llama" in config.model.lower():
             model = AutoModelForCausalLM.from_pretrained(config.model, 
-                                                        torch_dtype=config.dtype, 
+                                                        torch_dtype=dtype, 
                                                         trust_remote_code=True,
                                                         device_map="auto")
             tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
