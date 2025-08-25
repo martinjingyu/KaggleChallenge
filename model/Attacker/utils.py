@@ -5,11 +5,13 @@ from .template import system_prompt
 import copy
 
 
-def apply_chat_template_batch(config, node, tokenizer,history,child_num):
+def apply_chat_template_batch(config, node, tokenizer, history, child_num):
     messages_list = []
     deepth = node.depth+1
     if deepth > config.max_depth:
         deepth = config.max_depth
+    
+    
     
     messages = [
             {

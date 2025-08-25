@@ -1,25 +1,41 @@
-
-import yaml
-import copy
-from types import SimpleNamespace
 import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 class TargetModel():
-    def __init__(self, model, tokenizer):
-        with open('config/target_config.yaml', 'r', encoding='utf-8') as f:
-            config_dict = yaml.safe_load(f)
-            self.config = SimpleNamespace(**config_dict)
-            
-        self.model = model
-        self.tokenizer = tokenizer
+    def __init__(self, config):
+        
+        self.model, self.tokenizer = self.load_model(config)
         self.system_prompt = "You are a helpful AI assistant."
         
+    
+    def load_model(self, config):
+        
+        if "Qwen" in config.model:
+            model = AutoModelForCausalLM.from_pretrained(config.model, 
+                                                        torch_dtype=config.dtype, 
+                                                        trust_remote_code=True,
+                                                        device_map="auto")
+            tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
+        elif "gpt" in config.model.lower():
+            model = AutoModelForCausalLM.from_pretrained(config.model, 
+                                                        torch_dtype=config.dtype, 
+                                                        trust_remote_code=True,
+                                                        device_map="auto")
+            tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
+        elif "llama" in config.model.lower():
+            model = AutoModelForCausalLM.from_pretrained(config.model, 
+                                                        torch_dtype=config.dtype, 
+                                                        trust_remote_code=True,
+                                                        device_map="auto")
+            tokenizer = AutoTokenizer.from_pretrained(config.model, trust_remote_code=True)
+            
+        return model.to("cuda"), tokenizer
     
     def batch_response(self, messages_list,child_num):
         """
         Generate responses for a batch of messages.
         """
-        
+       
         text_list = self.tokenizer.apply_chat_template(
         messages_list,
         add_generation_prompt=True,
@@ -38,6 +54,22 @@ class TargetModel():
             outputs.append(generated_tokens)
         outputs = self.tokenizer.batch_decode(outputs)
         return outputs
+    
+    def extract_output(self, prompt):
+        if "<|channel|>analysis<|message|>" in prompt:
+            think = prompt.split("<|channel|>analysis<|message|>")[1]
+            think = think.split("<|end|>")[0]
+        else:
+            think = "No analysis provided."
+        if "<|channel|>final<|message|>" in prompt:
+            response = prompt.split("<|channel|>final<|message|>")[1]
+            response = response.split("<|return|>")[0]
+        else:
+            response = prompt
+        print(think)
+        print(response)
+        return think, response
+        
 """
 CUDA_VISIBLE_DEVICES=0 python model/target_model.py
 """

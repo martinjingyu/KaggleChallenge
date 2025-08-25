@@ -1,12 +1,12 @@
 seed: 233
 iter: 20
-seed_prompts_file: data/AdvBench/advBench.json
+seed_prompts_file: data/deception_prompts.json
 task_name: KaggleChallenge
 output_path: ./data/raw_data/${task_name}/rollout${num_rollouts}
 reward_url: gpt
 
 # LLM Config
-model_ckpt: openai/gpt-oss-20b
+model_ckpt: Qwen/Qwen3-14B
 dtype: "half"
 
 # SamplingParams
@@ -24,7 +24,6 @@ use_policy: True
 use_strategy: True
 start_idx: 0
 end_idx: 100000000
-stop_token_ids: [200002]
 
 
 num_rollouts: 2
