@@ -5,10 +5,10 @@ import re
 sys.path.append("./")
 from api.api_models import APIModel
 from model.Evaluator.utils import system_prompt_score
-api_base = "https://xiaogeng-east.openai.azure.com/"
-api_key = "ebaac1dda467451e90addf2c86afb68a"
-api_version = "2024-05-01-preview"
-deployment_name = "gpt-4o-mini-2024-07-18"
+api_base = ""
+api_key = ""
+api_version = ""
+deployment_name = ""
 class OpenAI_Models:
   def __init__(self,if_attack):
     self.deployment_name = deployment_name

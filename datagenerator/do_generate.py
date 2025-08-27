@@ -110,11 +110,12 @@ def generate_tree(config, i, prompt, attack_agent, target):
             outputs.append(datapoint)
             
         f.write(json.dumps(outputs))  
-        try:
+        
+        # try:
             
-            upload_single_data(config.output_path, f"tree_{i}.json")
-        except:
-            print("error when uploading")
+        #     upload_single_data(config.output_path, f"tree_{i}.json")
+        # except:
+        #     print("error when uploading")
             
     print(f"For prompt {i}, we have collected {len(outputs)} trajectories.")
 

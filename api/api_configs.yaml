@@ -1,6 +1,6 @@
 api_keys: &api_key_values
-    access_key: AKIATJHQEBAI4OCLZREL
-    secret_key: A9NO9qJ80z3dN+h/YSlsV03vl1NxkPIhKmTHVjHi
+    access_key: <YOUR_AWS_ACCESS_KEY>
+    secret_key: <YOUR_AWS_SECRET_KEY>
 
 gpt3.5turbo:
     api_type: openai
